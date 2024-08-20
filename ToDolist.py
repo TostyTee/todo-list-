@@ -1,34 +1,33 @@
 import streamlit as st
 
-todo_list = []
+# Initialize the ToDo list
+if 'todo_list' not in st.session_state:
+    st.session_state.todo_list = []
 
-while True:
-  if not todo_list:
-    print("Your ToDo list is empty")
-  else:
-    index = 1
-    for task in todo_list:
-      print(f"{index}. {task}")
-      index += 1
+# Display the current ToDo list
+st.header("Your ToDo List")
+if not st.session_state.todo_list:
+    st.write("Your ToDo list is empty")
+else:
+    for index, task in enumerate(st.session_state.todo_list, start=1):
+        st.write(f"{index}. {task}")
 
-  print("Options:")
-  print("1. Add Task")
-  print("2. Remove Task")
-  print("3. Quit")
+# Options for adding or removing tasks
+st.header("Options")
+if st.button("Add Task"):
+    new_task = st.text_input("Enter task to be added:", key='new_task')
+    if new_task:
+        st.session_state.todo_list.append(new_task)
+        st.success(f"Task '{new_task}' added to the ToDo list")
+        st.experimental_rerun()
 
-  choice = input("Enter your choice (1, 2, or 3): ")
-  
-  if choice == "1":
-    print("Adding task")
-    new_task = input("Enter task to be added:")
-    todo_list.append(new_task)
-    print(f"Task '{new_task}' added to the ToDo list")
-  elif choice == "2":
-    if len(todo_list) == 0:
-      print("Your ToDo list is empty")
+if st.button("Remove Last Task"):
+    if st.session_state.todo_list:
+        removed_task = st.session_state.todo_list.pop()
+        st.success(f"Removed task: {removed_task}")
+        st.experimental_rerun()
     else:
-        removed_task = todo_list.pop()
-        print(f"Removed task: {removed_task}") 
-  elif choice == "3":
-    print("Quitting")
-    break
+        st.warning("Your ToDo list is empty")
+
+if st.button("Quit"):
+    st.write("Goodbye!")
